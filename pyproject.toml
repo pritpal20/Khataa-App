@@ -1,0 +1,7 @@
+[project]
+name = "khataa-app"
+version = "0.1.0"
+description = "This app generates the bill for the order placed by the customer"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []  
