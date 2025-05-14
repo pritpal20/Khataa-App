@@ -1,7 +1,7 @@
 # This code defines a BillCalculator class that loads item prices from a CSV file,
 # calculates the total bill based on sales data from another CSV file, and generates a bill for each client.
 # The class handles file reading, data processing, and error handling for missing files or invalid formats.
-# The example usage at the end demonstrates how to create an instance of the BillCalculator class and calculate the total bill.
+# The example usage at the end demonstrates how to create an instance of the zCalculator class and calculate the total bill.
 # The code is structured to be reusable and can be easily integrated into a larger application.
 # The BillCalculator class can be extended or modified to include additional features such as discounts, taxes, or different billing formats.
 # The code is designed to be modular and maintainable, allowing for easy updates and changes in the future.
@@ -72,11 +72,9 @@ class BillCalculator:
         sales_data = self.calculate_bill()
         total_bill = 0
         for client, items in sales_data.items():
-            print(f"Client: {client}")
             for item, details in items.items():
-                print(f"  Item: {item}, Quantity: {details['quantity']}, Total Price: ${details['total_price']:.2f}")
                 total_bill += details['total_price']
-        return total_bill
+        return sales_data
     
     def add_invoice_header(self, pdf):
         # Load settings from a JSON file
@@ -96,20 +94,24 @@ class BillCalculator:
 
         # Use settings from the JSON file
         pdf.set_font("Arial", style='B', size=12)
-        pdf.cell(200, 10, txt=settings.get("company_name", ""), ln=True, align='L')
+        pdf.cell(200, 10, txt=settings["company_details"].get("name",""), ln=True, align='L')
         pdf.set_font("Arial", size=12)
-        pdf.cell(200, 9, txt=settings.get("address", ""), ln=True, align='L')
-        pdf.cell(200, 9, txt=settings.get("phone", ""), align='L', ln=True)
-        pdf.cell(200, 9, txt=settings.get("email", ""), ln=True, align='L')
+        pdf.cell(200, 9, txt=settings["company_details"].get("address", ""), ln=True, align='L')
+        pdf.cell(200, 9, txt=settings["company_details"].get("phone", ""), align='L', ln=True)
+        pdf.cell(200, 9, txt=settings["company_details"].get("email", ""), ln=True, align='L')
         pdf.set_font("Arial", style='B', size=12)
         pdf.cell(200, 2, txt=settings.get("separator", ""), ln=True, align='left', fill=True)
         pdf.cell(200, 10, txt=settings.get("invoice_title", ""), align='C', ln=True)
         pdf.ln(10)
 
     
-    def write_bill_to_pdf(self, output_file):
+    def write_bill_to_pdf(self, output_file, sales_data=None):
 
-        sales_data = self.calculate_bill()
+        if sales_data is None:
+            # If sales_data is not provided, calculate it
+            sales_data = self.calculate_bill()
+        # If sales_data is provided, use it directly
+        # Create a PDF object
         pdf = FPDF()
         self.add_invoice_header(pdf)
         
@@ -157,7 +159,15 @@ if __name__ == "__main__":
     price_file = "data.csv"
     input_file = "input_data.csv"
     calculator = BillCalculator(price_file, input_file)
-    total = calculator.calculate_bill()
-    print(f"Total Bill: ${total}")
-    calculator.generate_bill()
-    calculator.write_bill_to_pdf("bill.pdf")
+    data = calculator.generate_bill()
+
+    print(data)
+    print("*******************")
+    count = 1
+    for client,items in data.items():
+        print(f"Client: {client}")
+        print(f"Items: {items}")
+        client_data = {}
+        client_data[client] = items
+        calculator.write_bill_to_pdf(f"bill_{count}.pdf",client_data)
+        count += 1
