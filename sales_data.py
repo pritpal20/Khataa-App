@@ -1,17 +1,3 @@
-# This code defines a BillCalculator class that loads item prices from a CSV file,
-# calculates the total bill based on sales data from another CSV file, and generates a bill for each client.
-# The class handles file reading, data processing, and error handling for missing files or invalid formats.
-# The example usage at the end demonstrates how to create an instance of the zCalculator class and calculate the total bill.
-# The code is structured to be reusable and can be easily integrated into a larger application.
-# The BillCalculator class can be extended or modified to include additional features such as discounts, taxes, or different billing formats.
-# The code is designed to be modular and maintainable, allowing for easy updates and changes in the future.
-# The BillCalculator class can be used in various scenarios, such as retail sales, service billing, or any situation where itemized billing is required.
-# The code is written in Python and follows best practices for readability and maintainability.
-# The BillCalculator class can be easily tested with different input files and price files to ensure accuracy and reliability.
-# The code is designed to be efficient and can handle large datasets without significant performance issues.
-# The BillCalculator class can be integrated into a larger application or used as a standalone script for billing purposes.
-
-
 import csv
 from fpdf import FPDF
 import json
